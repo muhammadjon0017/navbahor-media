@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="uz"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NAVBAHOR MEDIA</title>
+<style>
+:root{--navy:#0A192F;--bg:#07111F;--gold:#FFD700;--green:#167A45}
+*{box-sizing:border-box;margin:0}body{background:radial-gradient(circle at top,#12305a,var(--bg) 60%) fixed;color:#fff;font-family:system-ui,sans-serif;padding-bottom:76px;min-height:100vh}
+button,input,select{font:inherit}header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#0A192Fcc;backdrop-filter:blur(10px);position:sticky;top:0;z-index:5;border-bottom:1px solid #ffd70033}
+.logo{font-weight:900;letter-spacing:2px;color:var(--gold)}.lang button{background:none;border:1px solid #ffffff33;color:#fff;border-radius:8px;padding:4px 8px;margin-left:4px}.lang .on{border-color:var(--gold);color:var(--gold)}
+main{max-width:760px;margin:auto;padding:16px}.card{background:#ffffff0d;border:1px solid #ffffff1f;border-radius:18px;padding:16px;margin-bottom:14px;backdrop-filter:blur(8px)}
+h1{font-size:28px;line-height:1.15}h2{margin-bottom:10px;color:var(--gold)}.muted{opacity:.7;font-size:14px}
+.btn{background:linear-gradient(135deg,#ffd700,#ffae00);color:#0A192F;border:0;border-radius:12px;padding:12px 18px;font-weight:800;cursor:pointer;margin:4px 4px 4px 0}.btn.alt{background:#ffffff1a;color:#fff}.btn:disabled{opacity:.4}
+input,select{width:100%;padding:12px;border-radius:10px;border:1px solid #ffffff33;background:#0A192F;color:#fff;margin:5px 0}
+nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:#0A192Ff2;border-top:1px solid #ffd70033;z-index:6}nav button{flex:1;background:none;border:0;color:#fff9;padding:12px 2px;font-size:12px}nav .on{color:var(--gold);font-weight:800}
+.pitch{background:repeating-linear-gradient(0deg,#167A45 0 60px,#1a8a50 60px 120px);border:3px solid #fff8;border-radius:14px;padding:14px 4px;display:flex;flex-direction:column;gap:18px}
+.row{display:flex;justify-content:space-around}.slot{width:64px;text-align:center;background:none;border:0;color:#fff;font-size:11px;cursor:pointer}
+.dot{width:46px;height:46px;border-radius:50%;margin:0 auto 3px;background:#0A192F;border:2px solid var(--gold);display:grid;place-items:center;font-weight:900;color:var(--gold);overflow:hidden}.dot img{width:100%;height:100%;object-fit:cover}
+.modal{position:fixed;inset:0;background:#000b;z-index:20;display:flex;align-items:flex-end;justify-content:center}.sheet{background:var(--navy);width:100%;max-width:760px;max-height:85vh;overflow:auto;border-radius:20px 20px 0 0;padding:16px}
+.pl{display:flex;align-items:center;gap:10px;padding:8px;border-radius:12px;background:#ffffff0d;margin:6px 0;cursor:pointer}.pl.off{opacity:.3;pointer-events:none}.pl .dot{margin:0;width:40px;height:40px}
+.gold{color:var(--gold)}.lb{display:flex;justify-content:space-between;padding:10px;border-radius:10px;margin:4px 0;background:#ffffff0d}.lb.r1{background:#ffd70033}.lb.r2{background:#c0c0c033}.lb.r3{background:#cd7f3233}
+.ok{color:#4ade80}.no{color:#f87171}.msg{padding:10px;border-radius:10px;background:#ffd70022;margin:8px 0}
+.chips button{margin:2px;padding:6px 10px;border-radius:20px;border:1px solid #fff4;background:none;color:#fff}.chips .on{background:var(--gold);color:#000}
+</style></head><body>
+<header><div class="logo">⚽ NAVBAHOR MEDIA</div><div class="lang" id="lang"></div></header>
+<main id="app"></main><nav id="nav"></nav><div id="modal"></div>
+<script>
+const L={
+uz:{home:"Bosh sahifa",lineup:"Tarkib",rank:"Reyting",me:"Profil",admin:"Admin",login:"Kirish",register:"Ro'yxatdan o'tish",logout:"Chiqish",
+hero:"Navbahor bilan birga o'yna. Taxmin qil. G'olib bo'l.",sub:"Sevimli jamoangiz tarkibini oldindan toping, olmoslar yig'ing va haqiqiy muxlislar orasida yetakchiga aylaning.",
+join:"O'yinga qo'shilish",how:"Qanday ishlaydi?",next:"Keyingi o'yin",none:"Hozircha o'yin yo'q",left:"Qolgan vaqt",deadline:"Taxmin muddati",closed:"Taxmin yopilgan",
+fullName:"To'liq ism",username:"Foydalanuvchi nomi",email:"Email",password:"Parol",loginId:"Email yoki username",coach:"Bosh murabbiy",formation:"Formatsiya",fanName:"Muxlis-murabbiy ismi",
+submit:"Taxminni yuborish",pick:"Futbolchini tanlang",all:"Barchasi",remove:"Olib tashlash",GK:"Darvozabon",DEF:"Himoyachi",MID:"Yarim himoyachi",FWD:"Hujumchi",
+ready:"Tarkibingiz tayyor!",readySub:"Taxminingizni do'stlaringiz bilan Instagram Stories orqali ulashing!",toIg:"Instagram Stories'ga o'tish",dl:"Rasmni yuklab olish",
+shareNote:"Hikoya avtomatik joylanmaydi: rasmni Instagram ichida o'zingiz qo'shasiz.",diamonds:"Olmos",rankTitle:"Eng ko'p olmos yig'ganlar",history:"Taxminlar tarixi",
+congrats:"Tabriklaymiz! Siz {n} ta futbolchini to'g'ri topdingiz!",pending:"Natija kutilmoqda",saved:"Taxmin saqlandi!",
+invalid_input:"Ma'lumotlar noto'g'ri",exists:"Bunday foydalanuvchi bor",bad_credentials:"Login yoki parol xato",deadline_passed:"Taxmin muddati tugagan",already_submitted:"Siz bu o'yinga allaqachon taxmin yuborgansiz",need_11:"Aniq 11 ta futbolchi tanlang",unauthorized:"Avval tizimga kiring",login_first:"Taxmin qilish uchun tizimga kiring",
+start:"Boshlash",s1:"Tarkibni taxmin qiling",s1d:"Navbahorning keyingi o'yinida qaysi futbolchilar asosiy tarkibda tushishini oldindan toping.",s2:"Olmos yig'ing",s2d:"Har bir to'g'ri topilgan futbolchi uchun 1 ta olmos oling.",s3:"Reytingda yuqorilang",s3d:"Boshqa muxlislar bilan raqobatlashing.",s4:"Sovrin yuting",s4d:"Birinchi davra yakunida eng ko'p olmos yig'gan muxlis maxsus sovrinni qo'lga kiritadi.",
+newMatch:"Yangi o'yin",round:"Tur",opponent:"Raqib",stadium:"Stadion",date:"O'yin vaqti",dead:"Taxmin muddati",create:"Yaratish",official:"Rasmiy tarkibni e'lon qilish (11 ta)",score:"Hisob",photo:"Rasm yuklash",done:"Bajarildi!",users:"Foydalanuvchilar",pickMatch:"O'yinni tanlang",noteAdmin:"Faqat muddat tugagandan keyin e'lon qilish mumkin."},
+ru:{home:"Главная",lineup:"Состав",rank:"Рейтинг",me:"Профиль",admin:"Админ",login:"Войти",register:"Регистрация",logout:"Выйти",
+hero:"Играй с Навбахор. Угадывай. Побеждай.",sub:"Угадайте состав любимой команды заранее, собирайте бриллианты и станьте лидером среди настоящих болельщиков.",
+join:"Присоединиться",how:"Как это работает?",next:"Следующий матч",none:"Пока нет матчей",left:"Осталось",deadline:"Дедлайн прогноза",closed:"Прогнозы закрыты",
+fullName:"Полное имя",username:"Имя пользователя",email:"Email",password:"Пароль",loginId:"Email или username",coach:"Главный тренер",formation:"Схема",fanName:"Имя болельщика-тренера",
+submit:"Отправить прогноз",pick:"Выберите игрока",all:"Все",remove:"Убрать",GK:"Вратарь",DEF:"Защитник",MID:"Полузащитник",FWD:"Нападающий",
+ready:"Ваш состав готов!",readySub:"Поделитесь прогнозом с друзьями в Instagram Stories!",toIg:"Перейти в Instagram Stories",dl:"Скачать изображение",
+shareNote:"История не публикуется автоматически: вы добавляете картинку сами внутри Instagram.",diamonds:"Бриллианты",rankTitle:"Больше всего бриллиантов",history:"История прогнозов",
+congrats:"Поздравляем! Вы угадали {n} игроков!",pending:"Ожидание результата",saved:"Прогноз сохранён!",
+invalid_input:"Неверные данные",exists:"Такой пользователь уже есть",bad_credentials:"Неверный логин или пароль",deadline_passed:"Время прогноза истекло",already_submitted:"Вы уже отправили прогноз на этот матч",need_11:"Выберите ровно 11 игроков",unauthorized:"Сначала войдите",login_first:"Войдите, чтобы делать прогнозы",
+start:"Начать",s1:"Угадайте состав",s1d:"Угадайте, какие игроки выйдут в стартовом составе Навбахора в следующем матче.",s2:"Собирайте бриллианты",s2d:"За каждого угаданного игрока — 1 бриллиант.",s3:"Поднимайтесь в рейтинге",s3d:"Соревнуйтесь с другими болельщиками.",s4:"Выигрывайте призы",s4d:"По итогам первого круга болельщик с наибольшим числом бриллиантов получает особый приз.",
+newMatch:"Новый матч",round:"Тур",opponent:"Соперник",stadium:"Стадион",date:"Время матча",dead:"Дедлайн прогноза",create:"Создать",official:"Опубликовать официальный состав (11)",score:"Счёт",photo:"Загрузить фото",done:"Готово!",users:"Пользователи",pickMatch:"Выберите матч",noteAdmin:"Можно публиковать только после дедлайна."},
+en:{home:"Home",lineup:"Lineup",rank:"Ranking",me:"Profile",admin:"Admin",login:"Log in",register:"Sign up",logout:"Log out",
+hero:"Play with Navbahor. Predict. Win.",sub:"Guess your favourite team's lineup in advance, collect diamonds and become a leader among true fans.",
+join:"Join the game",how:"How does it work?",next:"Next match",none:"No matches yet",left:"Time left",deadline:"Prediction deadline",closed:"Predictions closed",
+fullName:"Full name",username:"Username",email:"Email",password:"Password",loginId:"Email or username",coach:"Head coach",formation:"Formation",fanName:"Fan-coach name",
+submit:"Submit prediction",pick:"Choose a player",all:"All",remove:"Remove",GK:"Goalkeeper",DEF:"Defender",MID:"Midfielder",FWD:"Forward",
+ready:"Your lineup is ready!",readySub:"Share your prediction with friends on Instagram Stories!",toIg:"Go to Instagram Stories",dl:"Download image",
+shareNote:"Stories are never posted automatically: you add the image yourself inside Instagram.",diamonds:"Diamonds",rankTitle:"Most diamonds collected",history:"Prediction history",
+congrats:"Congratulations! You guessed {n} players correctly!",pending:"Awaiting result",saved:"Prediction saved!",
+invalid_input:"Invalid input",exists:"User already exists",bad_credentials:"Wrong login or password",deadline_passed:"Prediction deadline has passed",already_submitted:"You already submitted for this match",need_11:"Pick exactly 11 players",unauthorized:"Please log in first",login_first:"Log in to make predictions",
+start:"Start",s1:"Predict the lineup",s1d:"Guess which players will start in Navbahor's next match.",s2:"Collect diamonds",s2d:"Get 1 diamond for every correctly guessed player.",s3:"Climb the ranking",s3d:"Compete with other fans.",s4:"Win prizes",s4d:"After the first half of the season the fan with the most diamonds wins a special prize.",
+newMatch:"New match",round:"Round",opponent:"Opponent",stadium:"Stadium",date:"Kick-off",dead:"Prediction deadline",create:"Create",official:"Publish official lineup (11)",score:"Score",photo:"Upload photo",done:"Done!",users:"Users",pickMatch:"Choose a match",noteAdmin:"Only possible after the deadline."}};
+let lang=localStorage.lang||"uz";const t=(k,p={})=>(L[lang][k]||L.uz[k]||k).replace(/\{(\w+)\}/g,(_,x)=>p[x]);
+const COUNTS={"4-3-3":[1,4,3,3],"4-2-3-1":[1,4,2,3,1],"3-5-2":[1,3,5,2],"4-4-2":[1,4,4,2]};
+const POS={"4-3-3":["GK","DEF","MID","FWD"],"4-2-3-1":["GK","DEF","MID","MID","FWD"],"3-5-2":["GK","DEF","MID","FWD"],"4-4-2":["GK","DEF","MID","FWD"]};
+const S={view:"home",token:localStorage.token,me:null,players:[],matches:[],preds:[],board:[],formation:"4-3-3",slots:Array(11).fill(null),fanName:"",matchId:null,msg:"",adminUsers:[]};
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const $=id=>document.getElementById(id);
+async function api(url,method="GET",body){const o={method,headers:{}};if(S.token)o.headers.Authorization="Bearer "+S.token;
+ if(body instanceof FormData)o.body=body;else if(body){o.headers["Content-Type"]="application/json";o.body=JSON.stringify(body)}
+ const r=await fetch(url,o);const d=await r.json().catch(()=>({ok:false,error:"server_error"}));return d}
+const errText=d=>t(d.error)||d.error;
+const rows=()=>{let i=0;return COUNTS[S.formation].map((n,k)=>{const r={pos:POS[S.formation][k],idx:[...Array(n)].map(()=>i++)};return r})};
+const slotPos=i=>rows().find(r=>r.idx.includes(i)).pos;
+const pl=id=>S.players.find(p=>p.id===id);
+const last=n=>n.split(" ").slice(-1)[0];
+const dot=p=>p?(p.photoUrl?`<img src="${esc(p.photoUrl)}">`:p.jerseyNumber):"+";
+const openMatch=()=>S.matches.find(m=>m.status==="open");
+const nextMatch=()=>openMatch()||S.matches.find(m=>m.status==="closed");
+
+async function load(){
+ S.players=(await api("/api/players")).players||[];S.matches=(await api("/api/matches")).matches||[];
+ S.board=(await api("/api/leaderboard")).users||[];
+ if(S.token){const d=await api("/api/auth/me");if(d.ok)S.me=d.user;else{S.token=null;localStorage.removeItem("token")}
+  if(S.me){S.preds=(await api("/api/predictions/my")).predictions||[];if(S.me.role==="admin")S.adminUsers=(await api("/api/admin/users")).users||[]}}
+ if(!S.matchId){const m=nextMatch();if(m)S.matchId=m.id}
+ render()}
+function go(v){S.view=v;S.msg="";render();scrollTo(0,0)}
+function render(){
+ $("lang").innerHTML=["uz","ru","en"].map(l=>`<button class="${l===lang?"on":""}" onclick="setLang('${l}')">${{uz:"🇺🇿 UZ",ru:"🇷🇺 RU",en:"🇬🇧 EN"}[l]}</button>`).join("");
+ const tabs=[["home","🏠"],["lineup","⚽"],["rank","🏆"],["me","👤"]];if(S.me?.role==="admin")tabs.push(["admin","🛠"]);
+ $("nav").innerHTML=tabs.map(([v,i])=>`<button class="${S.view===v?"on":""}" onclick="go('${v}')">${i}<br>${t(v)}</button>`).join("");
+ $("app").innerHTML=({home:vHome,lineup:vLineup,rank:vRank,me:vMe,auth:vAuth,admin:vAdmin})[S.view]();
+ document.documentElement.lang=lang;
+ if(!localStorage.ob&&S.view==="home")onboarding()}
+function setLang(l){lang=l;localStorage.lang=l;render()}
+const msg=()=>S.msg?`<div class="msg">${esc(S.msg)}</div>`:"";
+function fmt(d){return new Date(d).toLocaleString(lang==="uz"?"uz-UZ":lang==="ru"?"ru-RU":"en-GB",{dateStyle:"medium",timeStyle:"short"})}
+function countdown(d){const s=Math.max(0,(new Date(d)-Date.now())/1000);return `${Math.floor(s/86400)}d ${Math.floor(s%86400/3600)}h ${Math.floor(s%3600/60)}m`}
+
+function vHome(){const m=nextMatch();
+ return `<div class="card" style="background:linear-gradient(160deg,#0A192F,#167A45aa)"><div class="gold" style="font-weight:800">⚽ FC NAVBAHOR NAMANGAN</div><h1 style="margin:10px 0">${t("hero")}</h1><p class="muted">${t("sub")}</p><br>
+ <button class="btn" onclick="go(S.me?'lineup':'auth')">${t("join")}</button><button class="btn alt" onclick="onboarding()">${t("how")}</button></div>
+ <div class="card"><h2>${t("next")}</h2>${m?`<h1>${t("round")} ${m.round}: Navbahor — ${esc(m.opponent)}</h1><p class="muted">${fmt(m.matchDate)} · ${esc(m.stadium||"")}</p>
+ <p>${m.status==="open"?`⏳ ${t("left")}: <b class="gold">${countdown(m.predictionDeadline)}</b>`:t("closed")}</p>`:`<p class="muted">${t("none")}</p>`}</div>
+ <div class="card"><h2>🏆 ${t("rankTitle")}</h2>${S.board.slice(0,3).map((u,i)=>`<div class="lb r${i+1}"><span>${i+1}. ${esc(u.username)}</span><b>💎 ${u.totalDiamonds}</b></div>`).join("")||`<p class="muted">—</p>`}</div>
+ <div class="card muted">${t("coach")}: <b>Temur Kapadze</b> · Telegram @livenavbahor</div>`}
+
+function onboarding(){const st=[1,2,3,4].map(i=>`<div class="card"><b class="gold">${i}. ${t("s"+i)}</b><p class="muted">${t("s"+i+"d")}</p></div>`).join("");
+ $("modal").innerHTML=`<div class="modal" style="align-items:center"><div class="sheet" style="border-radius:20px"><h2>NAVBAHOR MEDIA</h2>${st}<button class="btn" onclick="localStorage.ob=1;$('modal').innerHTML=''">${t("start")}</button></div></div>`}
+
+function vAuth(){const reg=S.authMode==="reg";
+ return `<div class="card"><h2>${reg?t("register"):t("login")}</h2>${msg()}
+ ${reg?`<input id="fn" placeholder="${t("fullName")}"><input id="un" placeholder="${t("username")}"><input id="em" type="email" placeholder="${t("email")}">`:`<input id="lg" placeholder="${t("loginId")}">`}
+ <input id="pw" type="password" placeholder="${t("password")}"><button class="btn" onclick="doAuth()">${reg?t("register"):t("login")}</button>
+ <button class="btn alt" onclick="S.authMode='${reg?"":"reg"}';render()">${reg?t("login"):t("register")}</button></div>`}
+async function doAuth(){const v=i=>$(i)?.value.trim();const reg=S.authMode==="reg";
+ const d=reg?await api("/api/auth/register","POST",{fullName:v("fn"),username:v("un"),email:v("em"),password:$("pw").value}):await api("/api/auth/login","POST",{login:v("lg"),password:$("pw").value});
+ if(!d.ok){S.msg=errText(d);return render()}
+ S.token=d.token;localStorage.token=d.token;S.view="lineup";S.msg="";await load()}
+function logout(){localStorage.removeItem("token");S.token=null;S.me=null;S.preds=[];go("home")}
+
+function vLineup(){
+ if(!S.me)return `<div class="card"><p>${t("login_first")}</p><button class="btn" onclick="go('auth')">${t("login")}</button></div>`;
+ const m=S.matches.find(x=>x.id===S.matchId);if(!m)return `<div class="card muted">${t("none")}</div>`;
+ const mine=S.preds.find(p=>p.MatchId===m.id);
+ const head=`<div class="card"><b>${t("round")} ${m.round}: Navbahor — ${esc(m.opponent)}</b><p class="muted">${t("deadline")}: ${fmt(m.predictionDeadline)}</p><p class="muted">${t("coach")}: Temur Kapadze</p></div>`;
+ if(mine){const n=mine.correctCount;const fin=m.status==="finished";
+  return head+`<div class="card">${fin?`<h2>${t("congrats",{n})}</h2>`:`<h2>${t("pending")}</h2>`}${mine.players.map(pp=>`<div class="lb"><span>#${pp.Player.jerseyNumber} ${esc(pp.Player.fullName)}</span><span>${pp.isCorrect===true?'<b class="ok">✔</b>':pp.isCorrect===false?'<b class="no">✘</b>':""}</span></div>`).join("")}
+  ${fin?`<p class="gold">💎 +${n}</p>`:""}</div>`}
+ const full=S.slots.every(x=>x);const open=m.status==="open";
+ const pitch=rows().slice().reverse().map(r=>`<div class="row">${r.idx.map(i=>{const p=pl(S.slots[i]);return `<button class="slot" onclick="pickSlot(${i})"><div class="dot">${dot(p)}</div>${p?esc(last(p.fullName)):t(r.pos)}</button>`}).join("")}</div>`).join("");
+ return head+msg()+`<div class="card"><div class="chips">${Object.keys(COUNTS).map(f=>`<button class="${f===S.formation?"on":""}" onclick="S.formation='${f}';S.slots=Array(11).fill(null);render()">${f}</button>`).join("")}</div>
+ <input id="fan" placeholder="${t("fanName")}" value="${esc(S.fanName||S.me.fullName)}" oninput="S.fanName=this.value"><div class="pitch">${pitch}</div>
+ <p class="muted">${S.slots.filter(x=>x).length}/11</p>${open?"":`<div class="msg">${t("closed")}</div>`}
+ <button class="btn" ${full&&open?"":"disabled"} onclick="submitPred()">${t("submit")}</button></div>`+
+ (full?`<div class="card" style="border-color:var(--gold)"><h2>${t("ready")}</h2><p>${t("readySub")}</p><button class="btn" onclick="shareStory(true)">📸 ${t("toIg")}</button><button class="btn alt" onclick="shareStory(false)">⬇ ${t("dl")}</button><p class="muted">${t("shareNote")}</p></div>`:"")}
+function pickSlot(i){const cur=S.slots[i],pos=slotPos(i);let f=pos;
+ const draw=()=>{$("modal").innerHTML=`<div class="modal" onclick="if(event.target===this)this.innerHTML=''"><div class="sheet"><h2>${t("pick")}</h2>
+ <div class="chips">${["all","GK","DEF","MID","FWD"].map(x=>`<button class="${x===f?"on":""}" data-f="${x}">${t(x)}</button>`).join("")}</div>
+ ${cur?`<button class="btn alt" id="rm">${t("remove")}</button>`:""}
+ ${S.players.filter(p=>f==="all"||p.position===f).map(p=>`<div class="pl ${S.slots.includes(p.id)&&p.id!==cur?"off":""}" data-id="${p.id}"><div class="dot">${dot(p)}</div><div><b>${esc(p.fullName)}</b><br><span class="muted">#${p.jerseyNumber} · ${t(p.position)}</span></div></div>`).join("")}</div></div>`;
+ document.querySelectorAll("[data-f]").forEach(b=>b.onclick=()=>{f=b.dataset.f;draw()});
+ document.querySelectorAll(".pl").forEach(b=>b.onclick=()=>{S.slots[i]=+b.dataset.id;$("modal").innerHTML="";render()});
+ if($("rm"))$("rm").onclick=()=>{S.slots[i]=null;$("modal").innerHTML="";render()}};draw()}
+async function submitPred(){const d=await api("/api/predictions","POST",{matchId:S.matchId,formation:S.formation,fanName:S.fanName||S.me.fullName,playerIds:S.slots});
+ if(!d.ok){S.msg=errText(d);return render()}S.slots=Array(11).fill(null);await load();S.msg=t("saved");render()}
+
+// ---------- Instagram Stories rasmi (canvas, 1080x1920) ----------
+function drawStory(){const c=document.createElement("canvas");c.width=1080;c.height=1920;const x=c.getContext("2d");
+ const g=x.createLinearGradient(0,0,0,1920);g.addColorStop(0,"#0A192F");g.addColorStop(1,"#07111F");x.fillStyle=g;x.fillRect(0,0,1080,1920);
+ x.textAlign="center";x.fillStyle="#FFD700";x.font="900 76px sans-serif";x.fillText("NAVBAHOR MEDIA",540,150);
+ x.fillStyle="#fff";x.font="40px sans-serif";x.fillText("FC NAVBAHOR · "+S.formation,540,215);
+ x.fillStyle="#167A45";x.fillRect(60,260,960,1260);x.strokeStyle="#ffffff88";x.lineWidth=5;x.strokeRect(60,260,960,1260);
+ x.beginPath();x.arc(540,890,130,0,7);x.stroke();x.beginPath();x.moveTo(60,890);x.lineTo(1020,890);x.stroke();
+ const R=rows().slice().reverse();R.forEach((r,k)=>{const y=380+k*(1060/(R.length-1||1));r.idx.forEach((i,j)=>{const cx=60+960*(j+1)/(r.idx.length+1),p=pl(S.slots[i]);
+  x.fillStyle="#0A192F";x.beginPath();x.arc(cx,y,62,0,7);x.fill();x.strokeStyle="#FFD700";x.lineWidth=6;x.stroke();
+  x.fillStyle="#FFD700";x.font="900 52px sans-serif";x.fillText(p.jerseyNumber,cx,y+18);
+  x.fillStyle="#fff";x.font="700 34px sans-serif";x.fillText(last(p.fullName),cx,y+112)})});
+ x.fillStyle="#FFD700";x.font="700 46px sans-serif";x.fillText((S.fanName||S.me.fullName)+" — "+t("coach")+" ⚽",540,1610);
+ x.fillStyle="#fff";x.font="38px sans-serif";x.fillText(t("coach")+": Temur Kapadze",540,1675);
+ x.fillStyle="#FFD700";x.font="900 54px sans-serif";x.fillText("@livenavbahor",540,1810);return c}
+async function shareStory(toIg){const c=drawStory();const blob=await new Promise(r=>c.toBlob(r,"image/png"));
+ const file=new File([blob],"navbahor-lineup.png",{type:"image/png"});
+ if(toIg&&navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],title:"NAVBAHOR MEDIA"});return}catch(e){if(e.name==="AbortError")return}}
+ const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="navbahor-lineup.png";a.click();
+ if(toIg){S.msg=t("shareNote");render();setTimeout(()=>{location.href="instagram://story-camera";setTimeout(()=>window.open("https://www.instagram.com/","_blank"),1200)},600)}}
+
+function vRank(){const me=S.me?S.board.findIndex(u=>u.id===S.me.id)+1:0;
+ return `<div class="card"><h2>🏆 ${t("rankTitle")}</h2>${me?`<p class="gold">#${me}</p>`:""}${S.board.map((u,i)=>`<div class="lb ${i<3?"r"+(i+1):""}" ${S.me?.id===u.id?'style="outline:2px solid var(--gold)"':""}><span>${i+1}. ${esc(u.username)}</span><span>✔ ${u.correctPredictions} · <b>💎 ${u.totalDiamonds}</b></span></div>`).join("")}</div>`}
+function vMe(){if(!S.me)return vAuth();
+ return `<div class="card"><h2>${esc(S.me.fullName)}</h2><p class="muted">@${esc(S.me.username)}</p><h1>💎 ${S.me.totalDiamonds}</h1><p class="muted">✔ ${S.me.correctPredictions}</p><button class="btn alt" onclick="logout()">${t("logout")}</button></div>
+ <div class="card"><h2>${t("history")}</h2>${S.preds.map(p=>`<div class="lb"><span>${t("round")} ${p.Match.round} · ${esc(p.Match.opponent)}</span><b>${p.Match.scored?"💎 "+p.correctCount:t("pending")}</b></div>`).join("")||'<p class="muted">—</p>'}</div>`}
+
+function vAdmin(){const ms=S.matches;
+ return `${msg()}<div class="card"><h2>${t("newMatch")}</h2><input id="a_r" type="number" min="1" max="32" placeholder="${t("round")} (1-32)"><input id="a_o" placeholder="${t("opponent")}"><input id="a_s" placeholder="${t("stadium")}">
+ <label class="muted">${t("date")}</label><input id="a_d" type="datetime-local"><label class="muted">${t("dead")}</label><input id="a_p" type="datetime-local"><button class="btn" onclick="addMatch()">${t("create")}</button></div>
+ <div class="card"><h2>${t("official")}</h2><p class="muted">${t("noteAdmin")}</p><select id="a_m">${ms.filter(m=>!m.scored).map(m=>`<option value="${m.id}">${t("round")} ${m.round} · ${esc(m.opponent)}</option>`).join("")}</select>
+ <div style="display:flex;gap:6px"><input id="a_h" type="number" placeholder="${t("score")} Navbahor"><input id="a_a" type="number" placeholder="${t("score")}"></div>
+ ${S.players.map(p=>`<label class="pl"><input type="checkbox" class="ol" value="${p.id}" style="width:auto"> #${p.jerseyNumber} ${esc(p.fullName)}</label>`).join("")}<button class="btn" onclick="publish()">${t("official")}</button></div>
+ <div class="card"><h2>${t("photo")}</h2>${S.players.map(p=>`<div class="pl" style="cursor:default"><div class="dot">${dot(p)}</div><span style="flex:1">${esc(p.fullName)}</span><input type="file" accept="image/*" style="width:120px;font-size:11px" onchange="upPhoto(${p.id},this)"></div>`).join("")}</div>
+ <div class="card"><h2>${t("users")} (${S.adminUsers.length})</h2>${S.adminUsers.map(u=>`<div class="lb"><span>${esc(u.username)}</span><b>💎 ${u.totalDiamonds}</b></div>`).join("")}</div>`}
+async function addMatch(){const v=i=>$(i).value;const d=await api("/api/admin/matches","POST",{round:+v("a_r"),opponent:v("a_o"),stadium:v("a_s"),matchDate:v("a_d")&&new Date(v("a_d")).toISOString(),predictionDeadline:v("a_p")&&new Date(v("a_p")).toISOString()});
+ S.msg=d.ok?t("done"):errText(d);await load()}
+async function publish(){const ids=[...document.querySelectorAll(".ol:checked")].map(e=>+e.value);
+ const d=await api(`/api/admin/matches/${$("a_m").value}/official-lineup`,"POST",{playerIds:ids,homeScore:$("a_h").value===""?null:+$("a_h").value,awayScore:$("a_a").value===""?null:+$("a_a").value});
+ S.msg=d.ok?t("done"):errText(d);await load()}
+async function upPhoto(id,el){if(!el.files[0])return;const f=new FormData();f.append("photo",el.files[0]);
+ const d=await api("/api/admin/players/"+id,"PUT",f);S.msg=d.ok?t("done"):errText(d);await load()}
+
+load();setInterval(()=>{if(S.view==="home"&&!$("modal").innerHTML)render()},60000);
+</script></body></html>
