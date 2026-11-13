@@ -100,25 +100,58 @@ app.post("/api/auth/login", wrap(async (req, res) => {
 }));
 app.get("/api/auth/me", authMw, (req, res) => res.json({ ok: true, user: pub(req.user) }));
 
+// ---------- ADMIN: Statistika ----------
+app.get("/api/admin/stats", adminMw, wrap(async (req, res) => {
+  const users = await User.count({ where: { role: "fan" } });
+  const matches = await Match.count();
+  const predictions = await Prediction.count();
+  const diamonds = await User.sum("totalDiamonds") || 0;
+  res.json({ ok: true, stats: { users, matches, predictions, diamonds } });
+}));
+
 // ---------- FUTBOLCHILAR ----------
 app.get("/api/players", wrap(async (req, res) =>
-  res.json({ ok: true, players: await Player.findAll({ order: [["jerseyNumber", "ASC"]] }) })));
+  res.json({ ok: true, players: await Player.findAll({ order: [["position", "ASC"], ["jerseyNumber", "ASC"]] }) })));
+
+app.post("/api/admin/players", adminMw, wrap(async (req, res) => {
+  const { fullName, jerseyNumber, position } = req.body;
+  if (!fullName || !jerseyNumber || !position) fail(400, "invalid_input");
+  const p = await Player.create({ fullName, jerseyNumber, position });
+  res.json({ ok: true, player: p });
+}));
+
 app.put("/api/admin/players/:id", adminMw, upload.single("photo"), wrap(async (req, res) => {
   const p = await Player.findByPk(req.params.id); if (!p) fail(404, "not_found");
   if (req.file) p.photoUrl = "/uploads/" + req.file.filename;
   if (req.body.fullName) p.fullName = req.body.fullName;
+  if (req.body.jerseyNumber) p.jerseyNumber = req.body.jerseyNumber;
+  if (req.body.position) p.position = req.body.position;
   await p.save(); res.json({ ok: true, player: p });
+}));
+
+app.delete("/api/admin/players/:id", adminMw, wrap(async (req, res) => {
+  const p = await Player.findByPk(req.params.id); if (!p) fail(404, "not_found");
+  await p.destroy(); res.json({ ok: true });
 }));
 
 // ---------- O'YINLAR ----------
 app.get("/api/matches", wrap(async (req, res) => {
-  const ms = await Match.findAll({ order: [["matchDate", "ASC"]], include: [{ model: OfficialLineup, as: "lineup" }] });
+  const ms = await Match.findAll({ order: [["matchDate", "DESC"]], include: [{ model: OfficialLineup, as: "lineup" }] });
   res.json({ ok: true, matches: ms.map((m) => ({ ...m.toJSON(), status: status(m) })) });
 }));
 app.post("/api/admin/matches", adminMw, wrap(async (req, res) => {
   const { round, opponent, stadium, matchDate, predictionDeadline } = req.body;
   if (!round || !opponent || !matchDate || !predictionDeadline) fail(400, "invalid_input");
   res.json({ ok: true, match: await Match.create({ round, opponent, stadium, matchDate, predictionDeadline }) });
+}));
+app.put("/api/admin/matches/:id", adminMw, wrap(async (req, res) => {
+  const m = await Match.findByPk(req.params.id); if (!m) fail(404, "not_found");
+  Object.assign(m, req.body); await m.save();
+  res.json({ ok: true, match: m });
+}));
+app.delete("/api/admin/matches/:id", adminMw, wrap(async (req, res) => {
+  const m = await Match.findByPk(req.params.id); if (!m) fail(404, "not_found");
+  await m.destroy(); res.json({ ok: true });
 }));
 
 // ---------- TAXMIN ----------
