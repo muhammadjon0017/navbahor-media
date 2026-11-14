@@ -2,11 +2,18 @@
 
 ## Ishga tushirish (3 qadam)
 1. PostgreSQL'da baza yarating:  `psql -U postgres -c "CREATE DATABASE navbahor_media;"`
-2. `.env.example` ni `.env` ga nusxalab, DB_PASSWORD va JWT_SECRET ni yozing.
+2. `.env.example` ni `.env` ga nusxalab, `DB_PASSWORD` va `JWT_SECRET` ni yozing. Hostingdagi PostgreSQL uchun `DB_*` sozlamalari o'rniga provayder bergan `DATABASE_URL` ni ishlating.
 3. Terminalda shu papka ichida:
    npm install
    npm start
 Brauzerda: http://localhost:5000   (admin: .env dagi ADMIN_EMAIL / ADMIN_PASSWORD)
+
+`DATABASE_URL` va `DB_PASSWORD` dan bittasi talab qilinadi. Hostingda maxfiy qiymatlarni `.env` fayliga yoki GitHub'ga joylamang; hosting boshqaruv panelining environment variables bo'limida kiriting.
+
+## Hostingga joylash
+1. Bepul tarifli PostgreSQL provayderida yangi, bo'sh baza yarating va ulanish satrini hostingdagi `DATABASE_URL` ga kiriting.
+2. Hosting environment variables bo'limida `JWT_SECRET` va `ADMIN_PASSWORD` ni ham belgilang (`ADMIN_EMAIL` va `ADMIN_USERNAME` ixtiyoriy).
+3. Maxfiy qiymatlarni chatga yoki GitHub'ga yubormang. Yangi bazada foydalanuvchi ma'lumotlari bo'lmaydi; ilova ishga tushganda kerakli jadvallarni yaratadi.
 
 ## Admin ish tartibi
 O'yin yarating -> muxlislar taxmin qiladi -> muddat tugagach "Rasmiy tarkib" ni e'lon qiling -> olmoslar avtomatik beriladi (bir marta).

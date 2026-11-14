@@ -18,31 +18,39 @@ const multer = require("multer");
 
 // ---------- DATABASE ----------
 
-if (!process.env.DB_PASSWORD) {
-  console.error("❌ DB_PASSWORD .env faylida topilmadi!");
+const databaseUrl = process.env.DATABASE_URL;
+
+if (!databaseUrl && !process.env.DB_PASSWORD) {
+  console.error("❌ DATABASE_URL yoki DB_PASSWORD .env faylida topilmadi!");
   process.exit(1);
 }
 
-const db = new Sequelize(
-  process.env.DB_NAME || "navbahor_media",
-  process.env.DB_USER || "postgres",
-  String(process.env.DB_PASSWORD),
-  {
-    host: process.env.DB_HOST || "localhost",
-    port: Number(process.env.DB_PORT) || 5432,
-    dialect: "postgres",
-    logging: false,
-    dialectOptions: {
-      application_name: "pfcnavbahor"
-    },
-    pool: {
-      max: 5,
-      min: 0,
-      acquire: 30000,
-      idle: 10000
-    }
+const databaseOptions = {
+  dialect: "postgres",
+  logging: false,
+  dialectOptions: {
+    application_name: "pfcnavbahor"
+  },
+  pool: {
+    max: 5,
+    min: 0,
+    acquire: 30000,
+    idle: 10000
   }
-);
+};
+
+const db = databaseUrl
+  ? new Sequelize(databaseUrl, databaseOptions)
+  : new Sequelize(
+      process.env.DB_NAME || "navbahor_media",
+      process.env.DB_USER || "postgres",
+      String(process.env.DB_PASSWORD),
+      {
+        ...databaseOptions,
+        host: process.env.DB_HOST || "localhost",
+        port: Number(process.env.DB_PORT) || 5432
+      }
+    );
 
 const SECRET = process.env.JWT_SECRET;
 
