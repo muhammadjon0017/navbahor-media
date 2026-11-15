@@ -1048,8 +1048,20 @@ async function startServer() {
         }
       });
 
-      if (!created && !player.photoUrl && squadPhotoByJersey[jerseyNumber]) {
-        player.photoUrl = squadPhotoByJersey[jerseyNumber];
+      const seededPhotoUrl = squadPhotoByJersey[jerseyNumber];
+      const storedPhotoPath = player.photoUrl && player.photoUrl.startsWith("/uploads/")
+        ? path.join(uploadsDir, path.basename(player.photoUrl))
+        : null;
+
+      if (
+        !created &&
+        seededPhotoUrl &&
+        (
+          !player.photoUrl ||
+          (storedPhotoPath && !fs.existsSync(storedPhotoPath))
+        )
+      ) {
+        player.photoUrl = seededPhotoUrl;
         await player.save();
       }
     }
