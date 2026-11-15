@@ -106,6 +106,13 @@ nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:#0A192Ff2;bor
 .admin-news-copy p{display:-webkit-box;overflow:hidden;margin-top:4px;color:#b9c7d6;font-size:12px;line-height:1.45;-webkit-box-orient:vertical;-webkit-line-clamp:2}
 .admin-news-copy small{display:block;margin-top:4px;color:#93a5b8;font-size:11px}
 .admin-news-item .btn{margin:0;padding:8px 10px}
+.fan-stat{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 14px;align-items:center;padding:12px;border:1px solid #ffffff18;border-radius:12px;background:#07172599}
+.fan-stat-info{display:flex;align-items:center;gap:10px;min-width:0}
+.fan-stat-info img{width:38px;height:38px;flex:none;border-radius:50%;object-fit:cover}
+.fan-stat-info small{color:#aebdcd}
+.fan-stat-votes{text-align:right;white-space:nowrap}
+.fan-stat-track{grid-column:1/-1;height:6px;overflow:hidden;border-radius:10px;background:#ffffff16}
+.fan-stat-track span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#167a45,#ffd700)}
 @media(max-width:480px){.admin-news-item{grid-template-columns:48px minmax(0,1fr)}.admin-news-thumb{width:48px;height:48px}.admin-news-item .btn{grid-column:2;justify-self:start}}
 @media(max-width:600px){.admin-mode{padding:16px 12px}.admin-page{gap:12px}.admin-hero{padding:22px 18px}.admin-stats{gap:8px}.admin-stat{padding:12px 10px}.admin-stat-value{font-size:21px}.admin-stat-label{font-size:11px}.admin-panel{padding:18px 14px}.admin-form-grid{grid-template-columns:1fr;gap:12px}.admin-submit{align-items:stretch;flex-direction:column}.admin-submit .btn{width:100%}}
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
@@ -163,9 +170,15 @@ const L = {
   ru: { home: 'Главная', lineup: 'Состав', rank: 'Рейтинг', me: 'Профиль', admin: 'Админ', login: 'Войти', register: 'Регистрация', logout: 'Выйти', hero: 'Играй с Навбахор. Угадывай. Побеждай.', sub: 'Угадайте состав любимой команды заранее, собирайте бриллианты и станьте лидером среди настоящих болельщиков.', join: 'Присоединиться', how: 'Как это работает?', next: 'Следующий матч', none: 'Пока нет матчей', left: 'Осталось', deadline: 'Дедлайн прогноза', closed: 'Прогнозы закрыты', fullName: 'Полное имя', username: 'Имя пользователя', email: 'Email', password: 'Пароль', loginId: 'Email или username', coach: 'Главный тренер', formation: 'Схема', fanName: 'Имя болельщика-тренера', submit: 'Отправить прогноз', pick: 'Выберите игрока', all: 'Все', remove: 'Убрать', GK: 'Вратарь', DEF: 'Защитник', MID: 'Полузащитник', FWD: 'Нападающий', ready: 'Ваш состав готов!', readySub: 'Поделитесь прогнозом с друзьями в Instagram Stories!', toIg: 'Перейти в Instagram Stories', dl: 'Скачать изображение', shareNote: 'История не публикуется автоматически: вы добавляете картинку сами внутри Instagram.', diamonds: 'Бриллианты', rankTitle: 'Больше всего бриллиантов', history: 'История прогнозов', congrats: 'Поздравляем! Вы угадали {n} игроков!', pending: 'Ожидание результата', saved: 'Прогноз сохранён!', invalid_input: 'Неверные данные', exists: 'Такой пользователь уже есть', bad_credentials: 'Неверный логин или пароль', deadline_passed: 'Время прогноза истекло', already_submitted: 'Вы уже отправили прогноз на этот матч', need_11: 'Выберите ровно 11 игроков', unauthorized: 'Сначала войдите', login_first: 'Войдите, чтобы делать прогнозы', only_one_admin: 'Войти может только один администратор', start: 'Начать', s1: 'Угадайте состав', s1d: 'Угадайте, какие игроки выйдут в стартовом составе Навбахора в следующем матче.', s2: 'Собирайте бриллианты', s2d: 'За каждого угаданного игрока — 1 бриллиант.', s3: 'Поднимайтесь в рейтинге', s3d: 'Соревнуйтесь с другими болельщиками.', s4: 'Выигрывайте призы', s4d: 'По итогам первого круга болельщик с наибольшим числом бриллиантов получает особый приз.', newMatch: 'Новый матч', round: 'Тур', opponent: 'Соперник', stadium: 'Стадион', date: 'Время матча', dead: 'Дедлайн прогноза', create: 'Создать', official: 'Опубликовать официальный состав (11)', score: 'Счёт', photo: 'Загрузить фото', done: 'Готово!', users: 'Пользователи', pickMatch: 'Выберите матч', noteAdmin: 'Можно публиковать только после дедлайна.', news: 'Новости', newsEmpty: 'Пока нет новостей', publishNews: 'Добавить новость', newsTitle: 'Заголовок', newsBody: 'Текст', save: 'Сохранить', savedProfile: 'Профиль обновлён!', editProfile: 'Редактировать профиль', delNews: 'Удалить', delMatch: 'Удалить матч' },
   en: { home: 'Home', lineup: 'Lineup', rank: 'Ranking', me: 'Profile', admin: 'Admin', login: 'Log in', register: 'Sign up', logout: 'Log out', hero: 'Play with Navbahor. Predict. Win.', sub: 'Guess your favourite team\'s lineup in advance, collect diamonds and become a leader among true fans.', join: 'Join the game', how: 'How does it work?', next: 'Next match', none: 'No matches yet', left: 'Time left', deadline: 'Prediction deadline', closed: 'Predictions closed', fullName: 'Full name', username: 'Username', email: 'Email', password: 'Password', loginId: 'Email or username', coach: 'Head coach', formation: 'Formation', fanName: 'Fan-coach name', submit: 'Submit prediction', pick: 'Choose a player', all: 'All', remove: 'Remove', GK: 'Goalkeeper', DEF: 'Defender', MID: 'Midfielder', FWD: 'Forward', ready: 'Your lineup is ready!', readySub: 'Share your prediction with friends on Instagram Stories!', toIg: 'Go to Instagram Stories', dl: 'Download image', shareNote: 'Stories are never posted automatically: you add the image yourself inside Instagram.', diamonds: 'Diamonds', rankTitle: 'Most diamonds collected', history: 'Prediction history', congrats: 'Congratulations! You guessed {n} players correctly!', pending: 'Awaiting result', saved: 'Prediction saved!', invalid_input: 'Invalid input', exists: 'User already exists', bad_credentials: 'Wrong login or password', deadline_passed: 'Prediction deadline has passed', already_submitted: 'You already submitted for this match', need_11: 'Pick exactly 11 players', unauthorized: 'Please log in first', login_first: 'Log in to make predictions', only_one_admin: 'Only one admin is allowed', start: 'Start', s1: 'Predict the lineup', s1d: "Guess which players will start in Navbahor's next match.", s2: 'Collect diamonds', s2d: 'Get 1 diamond for every correctly guessed player.', s3: 'Climb the ranking', s3d: 'Compete with other fans.', s4: 'Win prizes', s4d: 'After the first half of the season the fan with the most diamonds wins a special prize.', newMatch: 'New match', round: 'Round', opponent: 'Opponent', stadium: 'Stadium', date: 'Kick-off', dead: 'Prediction deadline', create: 'Create', official: 'Publish official lineup (11)', score: 'Score', photo: 'Upload photo', done: 'Done!', users: 'Users', pickMatch: 'Choose a match', noteAdmin: 'Only possible after the deadline.', news: 'News', newsEmpty: 'No news yet', publishNews: 'Add news', newsTitle: 'Title', newsBody: 'Text', save: 'Save', savedProfile: 'Profile updated!', editProfile: 'Edit profile', delNews: 'Delete', delMatch: 'Delete match' }
 };
+const FAN_STATS_TEXT = {
+  uz: { title: 'Muxlislar tanlovi', description: 'Har bir o‘yinda muxlislar eng ko‘p tanlagan futbolchilar va ularni tanlagan muxlislar ulushi.', match: 'O‘yinni tanlang', predictions: 'Yuborilgan taxminlar', votes: 'tanlov', empty: 'Hozircha bu o‘yinga taxmin yuborilmagan.', refresh: 'Yangilash', loading: 'Statistika yuklanmoqda...' },
+  ru: { title: 'Выбор болельщиков', description: 'Игроки, которых болельщики чаще всего выбирали в каждом матче, и доля выбравших их.', match: 'Выберите матч', predictions: 'Отправлено прогнозов', votes: 'выборов', empty: 'Для этого матча пока нет прогнозов.', refresh: 'Обновить', loading: 'Загрузка статистики...' },
+  en: { title: 'Fan picks', description: 'Players selected most often by fans for each match, with the share of fans who picked them.', match: 'Select a match', predictions: 'Predictions submitted', votes: 'picks', empty: 'No predictions have been submitted for this match yet.', refresh: 'Refresh', loading: 'Loading statistics...' }
+};
+const statT = key => FAN_STATS_TEXT[lang][key];
 let lang = localStorage.lang || 'uz';
 const t = (k, p = {}) => (L[lang][k] || L.uz[k] || k).replace(/\{(\w+)\}/g, (_, x) => p[x]);
-const S = { view: 'home', authMode: 'login', token: localStorage.getItem('token'), me: null, players: [], matches: [], preds: [], board: [], news: [], msg: '', photoMsg: '', newsMsg: '', matchId: null, fanName: '', formation: '4-3-3', slots: Array(11).fill(null), activeSlot: null };
+const S = { view: 'home', authMode: 'login', token: localStorage.getItem('token'), me: null, players: [], matches: [], preds: [], board: [], news: [], msg: '', photoMsg: '', newsMsg: '', matchId: null, fanStats: null, fanStatsMatchId: null, fanStatsLoading: false, fanStatsError: '', fanName: '', formation: '4-3-3', slots: Array(11).fill(null), activeSlot: null };
 const FORMATION_POSITIONS = ['FWD', 'FWD', 'FWD', 'MID', 'MID', 'MID', 'DEF', 'DEF', 'DEF', 'DEF', 'GK'];
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const $ = id => document.getElementById(id);
@@ -213,7 +226,15 @@ function countdown(value) {
   return `${days}d ${hours}h ${minutes}m`;
 }
 
-function go(view) { S.view = view; S.msg = ''; S.activeSlot = null; render(); }
+function go(view) {
+  S.view = view;
+  S.msg = '';
+  S.activeSlot = null;
+  render();
+  if (view === 'admin' && S.matches.length) {
+    loadFanStats(S.fanStatsMatchId || S.matches[0].id);
+  }
+}
 
 function renderHome() {
   const m = S.matches.find(match => match.status === 'open') || S.matches.find(match => match.status === 'closed') || null;
@@ -423,6 +444,7 @@ function renderProfile() {
 
 function renderAdmin() {
   const openMatches = S.matches.filter(match => match.status === 'open').length;
+  const fanStats = S.fanStats;
   return `
     <div class="admin-page">
       <section class="admin-hero">
@@ -434,6 +456,33 @@ function renderAdmin() {
         <div class="admin-stat"><div class="admin-stat-label">Jami o'yinlar</div><div class="admin-stat-value">${S.matches.length}</div></div>
         <div class="admin-stat"><div class="admin-stat-label">Taxmin ochiq</div><div class="admin-stat-value">${openMatches}</div></div>
         <div class="admin-stat"><div class="admin-stat-label">Futbolchilar</div><div class="admin-stat-value">${S.players.length}</div></div>
+      </section>
+      <section class="admin-panel">
+        <div class="admin-panel-heading">
+          <div class="admin-panel-icon">📊</div>
+          <div><h2>${statT('title')}</h2><p>${statT('description')}</p></div>
+        </div>
+        <div class="admin-field">
+          <label for="fan-stats-match">${statT('match')}</label>
+          <select id="fan-stats-match" onchange="loadFanStats(this.value)" ${S.matches.length ? '' : 'disabled'}>
+            ${S.matches.map(match => `<option value="${match.id}" ${Number(S.fanStatsMatchId || S.matches[0].id) === match.id ? 'selected' : ''}>${t('round')} ${match.round}: Navbahor — ${esc(match.opponent)}</option>`).join('')}
+          </select>
+        </div>
+        ${S.fanStatsError ? `<div class="msg">${esc(S.fanStatsError)}</div>` : ''}
+        ${S.fanStatsLoading ? `<p class="muted">${statT('loading')}</p>` : fanStats ? `
+          <p class="muted" style="margin:14px 0">${statT('predictions')}: <b>${fanStats.predictions}</b></p>
+          <div style="display:grid;gap:8px">
+            ${fanStats.players.map((player, index) => `<div class="fan-stat">
+              <div class="fan-stat-info">
+                ${player.photoUrl ? `<img src="${esc(player.photoUrl)}" alt="">` : `<span class="roster-avatar" style="width:38px;height:38px">#${player.jerseyNumber}</span>`}
+                <span><b>${index + 1}. ${esc(player.fullName)}</b><br><small>#${player.jerseyNumber} · ${t(player.position)}</small></span>
+              </div>
+              <div class="fan-stat-votes"><b>${player.votes}</b> <small class="muted">${statT('votes')}</small><br><small class="gold">${player.percentage}%</small></div>
+              <div class="fan-stat-track"><span style="width:${Math.min(100, Math.max(0, Number(player.percentage) || 0))}%"></span></div>
+            </div>`).join('') || `<p class="muted">${statT('empty')}</p>`}
+          </div>
+        ` : S.matches.length ? '' : `<p class="muted">${statT('empty')}</p>`}
+        ${S.matches.length ? `<button class="btn alt" onclick="loadFanStats($('fan-stats-match').value)">${statT('refresh')}</button>` : ''}
       </section>
       <section class="admin-panel">
         <div class="admin-panel-heading">
@@ -493,6 +542,37 @@ function renderAdmin() {
       <div class="muted" style="text-align:center;padding:2px 0 8px">⚽ PFCNAVBAHOR_ · Admin panel</div>
       </div>
   `;
+}
+
+async function loadFanStats(matchId) {
+  const id = Number(matchId);
+  if (!Number.isInteger(id) || id < 1) return;
+
+  S.fanStatsMatchId = id;
+  S.fanStatsLoading = true;
+  S.fanStatsError = '';
+  S.fanStats = null;
+  render();
+
+  let result;
+  try {
+    result = await api(`/api/admin/matches/${id}/prediction-stats`);
+  } catch (error) {
+    if (S.fanStatsMatchId !== id || S.view !== 'admin') return;
+    S.fanStatsError = error.message || 'Error';
+    S.fanStatsLoading = false;
+    render();
+    return;
+  }
+
+  if (S.fanStatsMatchId !== id || S.view !== 'admin') return;
+  S.fanStatsLoading = false;
+  if (!result.ok) {
+    S.fanStatsError = errText(result);
+  } else {
+    S.fanStats = result.stats;
+  }
+  render();
 }
 
 async function uploadPlayerPhoto(playerId, file) {

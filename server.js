@@ -579,6 +579,68 @@ app.get("/api/matches", wrap(async (req, res) => {
   });
 }));
 
+app.get("/api/admin/matches/:id/prediction-stats", adminMw, wrap(async (req, res) => {
+  const match = await Match.findByPk(req.params.id);
+
+  if (!match) fail(404, "not_found");
+
+  const predictions = await Prediction.findAll({
+    attributes: ["id"],
+    where: { MatchId: match.id },
+    raw: true
+  });
+  const predictionIds = predictions.map((prediction) => prediction.id);
+  const counts = predictionIds.length
+    ? await PredictedPlayer.findAll({
+        attributes: [
+          "PlayerId",
+          [Sequelize.fn("COUNT", Sequelize.col("PlayerId")), "votes"]
+        ],
+        where: { PredictionId: predictionIds },
+        group: ["PlayerId"],
+        order: [
+          [Sequelize.fn("COUNT", Sequelize.col("PlayerId")), "DESC"],
+          ["PlayerId", "ASC"]
+        ],
+        raw: true
+      })
+    : [];
+  const players = counts.length
+    ? await Player.findAll({
+        where: { id: counts.map((count) => count.PlayerId) }
+      })
+    : [];
+  const playersById = new Map(players.map((player) => [player.id, player]));
+  const playerStats = counts
+    .map((count) => {
+      const player = playersById.get(count.PlayerId);
+      if (!player) return null;
+
+      const votes = Number(count.votes);
+      return {
+        id: player.id,
+        fullName: player.fullName,
+        jerseyNumber: player.jerseyNumber,
+        position: player.position,
+        photoUrl: player.photoUrl,
+        votes,
+        percentage: predictions.length
+          ? Math.round((votes / predictions.length) * 100)
+          : 0
+      };
+    })
+    .filter(Boolean)
+    .sort((a, b) => b.votes - a.votes || a.jerseyNumber - b.jerseyNumber);
+
+  res.json({
+    ok: true,
+    stats: {
+      predictions: predictions.length,
+      players: playerStats
+    }
+  });
+}));
+
 app.post("/api/admin/matches", adminMw, wrap(async (req, res) => {
   const {
     round,
@@ -933,32 +995,35 @@ const squad = [
   ["Ruslan Jiyanov", 7, "FWD"],
   ["Husayn Norchayev", 11, "FWD"],
   ["Joel Kojo", 28, "FWD"],
-  ["Muhammadali Usminov", 77, "FWD"],
-  ["Giyasov Muhammadali", 17, "FWD"]
+  ["Muhammadali Usmonov", 77, "FWD"],
+  ["Giyasov Muhammadali", 17, "FWD"],
+  ["Jasur Jaloliddinov", 30, "MID"]
 ];
 
 const squadPhotoByJersey = {
-  1: "/uploads/1794678297545.jpg",
-  16: "/uploads/1794678297629.jpg",
-  2: "/uploads/1794678297688.jpg",
-  4: "/uploads/1794678297749.jpg",
-  5: "/uploads/1794678298745.jpg",
-  18: "/uploads/1794678297813.jpg",
-  22: "/uploads/1794678297874.jpg",
-  34: "/uploads/1794678297935.jpg",
-  44: "/uploads/1794678297997.jpg",
-  55: "/uploads/1794678298059.jpg",
-  6: "/uploads/1794678298121.jpg",
-  8: "/uploads/1794678298807.jpg",
-  13: "/uploads/1794678298184.jpg",
-  21: "/uploads/1794678298247.jpg",
-  23: "/uploads/1794678298311.jpg",
-  97: "/uploads/1794678298370.jpg",
-  7: "/uploads/1794678298432.jpg",
-  11: "/uploads/1794678298495.jpg",
-  17: "/uploads/1794678298559.jpg",
-  28: "/uploads/1794678298618.jpg",
-  77: "/uploads/1794678298682.jpg"
+  1: "/uploads/yusupov.png",
+  16: "/uploads/yuldashev.png",
+  2: "/uploads/mirsaid.png",
+  4: "/uploads/mamatkazin.png",
+  5: "/uploads/komliov.png",
+  18: "/uploads/musohonov.png",
+  22: "/uploads/adxamzoda.png",
+  34: "/uploads/giorgi.png",
+  44: "/uploads/anri.png",
+  55: "/uploads/khamraliyev.png",
+  6: "/uploads/abduraxmonov.png",
+  8: "/uploads/xolmatov.png",
+  13: "/uploads/teidi.png",
+  21: "/uploads/rakhimjanov.png",
+  23: "/uploads/ilich.png",
+  97: "/uploads/fernandes.png",
+  7: "/uploads/jiyanov.png",
+  11: "/uploads/norchaev.png",
+  17: "/uploads/giyosov.png",
+  28: "/uploads/kojo.png",
+  77: "/uploads/usmonov.png",
+  30: "/uploads/jaloliddinov.png",
+
 };
 
 async function startServer() {
