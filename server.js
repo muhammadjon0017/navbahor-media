@@ -16,7 +16,6 @@ const jwt = require("jsonwebtoken");
 const rateLimit = require("express-rate-limit");
 const multer = require("multer");
 
-// ---------- DATABASE ----------
 
 const databaseUrl = process.env.DATABASE_URL;
 
@@ -29,7 +28,11 @@ const databaseOptions = {
   dialect: "postgres",
   logging: false,
   dialectOptions: {
-    application_name: "pfcnavbahor"
+    application_name: "pfcnavbahor",
+    ssl: {
+      require: true,
+      rejectUnauthorized: false
+    }
   },
   pool: {
     max: 5,
@@ -37,6 +40,10 @@ const databaseOptions = {
     acquire: 30000,
     idle: 10000
   }
+};
+
+  retry: {
+    max: 3
 };
 
 const db = databaseUrl
@@ -52,12 +59,6 @@ const db = databaseUrl
       }
     );
 
-const SECRET = process.env.JWT_SECRET;
-
-if (!SECRET) {
-  console.error("❌ JWT_SECRET .env faylida topilmadi!");
-  process.exit(1);
-}
 
 // ---------- MODELLAR ----------
 
@@ -1034,7 +1035,7 @@ async function startServer() {
 
     console.log("✅ PostgreSQL bazaga ulandi!");
 
-    await db.sync({ alter: true });
+  await db.sync();
 
     console.log("✅ Jadvallar tayyor!");
 
