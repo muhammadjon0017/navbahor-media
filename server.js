@@ -13,6 +13,12 @@ const express = require("express");
 const { Sequelize, DataTypes } = require("sequelize");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+
+const SECRET = process.env.JWT_SECRET;
+
+if (!SECRET) {
+  throw new Error("JWT_SECRET .env faylida topilmadi!");
+}
 const rateLimit = require("express-rate-limit");
 const multer = require("multer");
 
@@ -27,6 +33,7 @@ if (!databaseUrl && !process.env.DB_PASSWORD) {
 const databaseOptions = {
   dialect: "postgres",
   logging: false,
+
   dialectOptions: {
     application_name: "pfcnavbahor",
     ssl: {
@@ -34,16 +41,17 @@ const databaseOptions = {
       rejectUnauthorized: false
     }
   },
+
   pool: {
     max: 5,
     min: 0,
     acquire: 30000,
     idle: 10000
-  }
-};
+  },
 
   retry: {
     max: 3
+  }
 };
 
 const db = databaseUrl
@@ -233,6 +241,10 @@ app.use("/api/auth", rateLimit({
 }));
 
 app.use(express.static(path.join(__dirname, "public")));
+
+app.get("/favicon.ico", (req, res) => {
+  res.redirect(301, "/favicon.svg");
+});
 
 const uploadsDir = path.join(__dirname, "uploads");
 

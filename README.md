@@ -6,7 +6,7 @@
 3. Terminalda shu papka ichida:
    npm install
    npm start
-Brauzerda: http://localhost:5000   (admin: .env dagi ADMIN_EMAIL / ADMIN_PASSWORD)
+Brauzerda terminalda ko'rsatilgan manzilni oching (masalan, http://localhost:5001). Agar port band bo'lsa, server keyingi portga o'tadi; eski serverni to'xtatib qayta ishga tushiring. Admin: `.env` dagi `ADMIN_EMAIL` / `ADMIN_PASSWORD`.
 
 `DATABASE_URL` va `DB_PASSWORD` dan bittasi talab qilinadi. Hostingda maxfiy qiymatlarni `.env` fayliga yoki GitHub'ga joylamang; hosting boshqaruv panelining environment variables bo'limida kiriting.
 
